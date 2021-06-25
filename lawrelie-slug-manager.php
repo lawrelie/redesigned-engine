@@ -1,7 +1,7 @@
 <?php
 namespace Lawrelie\WordPress\SlugManager;
 // Plugin Name: lawrelie-slug-manager
-// Description: WordPress のスラッグを階層別に管理するプラグイン
+// Description: スラッグを階層別に管理するプラグイン
 // Version: 0.1.0-alpha
 // Requires at least: 4.4
 // Tested up to: 5.7
