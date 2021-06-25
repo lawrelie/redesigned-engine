@@ -1,12 +1,12 @@
 <?php
-namespace Lawrelie\RedesignedEngine;
-// Plugin Name: lawrelie-redesigned-engine
+namespace Lawrelie\WordPress\SlugManager;
+// Plugin Name: lawrelie-slug-manager
 // Description: WordPress のスラッグを階層別に管理するプラグイン
 // Version: 0.1.0-alpha
 // Requires at least: 4.4
 // Tested up to: 5.7
 // Requires PHP: 7.4
-// Text Domain: lawrelie-redesigned-engine
+// Text Domain: lawrelie-slug-manager
 use WP_Post, WP_Term;
 $constantName = fn(string $name): string => __NAMESPACE__ . '\\' . $name;
 $define = fn(string $name, ...$args): bool => \define($constantName($name), ...$args);
@@ -34,7 +34,7 @@ function fillMetaBox(WP_Post $post): void {
 }
 function filter_addMetaBoxes(string $postType, $post): void {
     $post = \get_post($post);
-    \add_meta_box($post->ID, 'lawrelie-redesigned-engine', __NAMESPACE__ . '\fillMetaBox');
+    \add_meta_box($post->ID, 'lawrelie-slug-manager', __NAMESPACE__ . '\fillMetaBox');
 }
 function filter_addedPostMeta(int $mid, int $objectId, string $metaKey, $_metaValue): void {
     if (!$objectId) {
@@ -110,7 +110,7 @@ function filter_savePost(int $postId, WP_Post $post, bool $update): void {
 function filter_taxonomyEditForm(WP_Term $tag, string $taxonomy): void {
     ?>
     <fieldset>
-        <legend>lawrelie-redesigned-engine</legend>
+        <legend>lawrelie-slug-manager</legend>
         <p>階層別のスラッグの管理</p>
         <table class="form-table" role="presentation">
             <tbody>
@@ -132,7 +132,7 @@ function filter_taxonomyEditForm(WP_Term $tag, string $taxonomy): void {
     <?php
 }
 function metaKey(string $key): string {
-    return "lawrelieRedesignedEngine_$key";
+    return "lawrelieSlugManager_$key";
 }
 function modifyPostSlug(WP_Post $post, string $parentSlug = ''): string {
     $metaKey = metaKey('postSlug');
@@ -169,7 +169,7 @@ function modifyPostSlug(WP_Post $post, string $parentSlug = ''): string {
         $slug = \implode('-', \array_reverse($slugs));
     } else {
         $slug = \get_post_meta($post->ID, $metaKey, true);
-        $slug = !empty($slug) ? "$parentSlug-$slug" : $slug;
+        $slug = !empty($slug) ? "$parentSlug-$slug" : '';
     }
     if ('' === $slug || $post->post_name === $slug || !!\get_posts(['numberposts' => 1, 'name' => $slug]) || $post->ID !== \wp_update_post(['ID' => $post->ID, 'post_name' => $slug])) {
         return $slug;
@@ -194,7 +194,7 @@ function modifyTermSlug(WP_Term $term, string $parentSlug = ''): string {
         $slug = \implode('-', \array_reverse($slugs));
     } else {
         $slug = \get_term_meta($term->term_id, metaKey('termSlug'), true);
-        $slug = !empty($slug) ? "$parentSlug-$slug" : $slug;
+        $slug = !empty($slug) ? "$parentSlug-$slug" : '';
     }
     if (
         '' === $slug
