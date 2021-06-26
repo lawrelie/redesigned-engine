@@ -77,7 +77,7 @@ function filter_editTerm(int $termId, int $ttId, string $taxonomy): void {
     }
 }
 function filter_init(): void {
-    foreach (\get_taxonomies(['object_type' => ['post']], 'names') as $name) {
+    foreach (\get_taxonomies(['show_ui' => true], 'names') as $name) {
         \add_filter("{$name}_edit_form", __NAMESPACE__ . '\filter_taxonomyEditForm', 10, 2);
     }
 }
